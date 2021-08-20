@@ -5,6 +5,7 @@ const card = document.querySelector('.card'); // big card containing picture + i
 const details = document.querySelector('.details'); // city name + weather condition + temperature
 const time = document.querySelector('img.time');
 const icon = document.querySelector('.icon img');
+const forecast = new Forecast();
 
 const updateUI = (data) => { // the object from updateCity()
 
@@ -35,29 +36,16 @@ const updateUI = (data) => { // the object from updateCity()
     }
 };
 
-
-const updateCity = async (city) => {
-
-    const cityDets = await getCity(city); // await to make sure it is finished, returns a promise
-    const weather = await getWeather(cityDets.Key);
-
-    return {    // returning a new object
-        cityDets,   // very nice object shorthand notation instead of writing cityDets: cityDets
-        weather
-    };
-};
-
 cityForm.addEventListener('submit', e => {
     //prevent default action
     e.preventDefault();
 
     // get city value
     const city = cityForm.city.value.trim();
-    console.log(city);
     cityForm.reset();
 
     // update the ui with new city
-    updateCity(city)
+    forecast.updateCity(city)
         .then(data => updateUI(data)) // the data is the onject returned by updateCity()
         .catch(err => console.log(err));
 
@@ -66,7 +54,7 @@ cityForm.addEventListener('submit', e => {
 })
 
 if(localStorage.getItem('city')){
-    updateCity(localStorage.getItem('city'))
+    forecast.updateCity(localStorage.getItem('city'))
         .then(data => updateUI(data))
         .catch(err => console.log(err));
 }
